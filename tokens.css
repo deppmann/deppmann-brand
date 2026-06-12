@@ -1,0 +1,89 @@
+/* ============================================================
+   DEPPMANN LAB — Design Tokens  (@deppmann/brand)
+   Single source of truth for the deppmannlab.com ecosystem.
+   Consumed by: deppmannlab-website (public), members, biochempedia.
+   Extracted verbatim from the public site's global.css so the
+   live site renders identically after it switches to this file.
+
+   EDIT HERE, NOT IN THE CONSUMERS. Each surface vendors this via
+   the `brand/` git submodule and imports it before its own CSS.
+   ============================================================ */
+
+/* --- Typeface program --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+  /* Primary Palette */
+  --color-navy: #1B2A4A;
+  --color-navy-light: #2C3E6B;
+  --color-navy-dark: #111D35;
+  --color-gold: #D4A843;
+  --color-gold-light: #E8C76B;
+  --color-gold-dark: #B8912E;
+  --color-teal: #2A7B88;
+  --color-teal-light: #3A9DAD;
+  --color-teal-dark: #1E5C66;
+
+  /* Neutrals */
+  --color-bg: #F8F6F2;
+  --color-bg-alt: #F0EDE7;
+  --color-white: #FFFFFF;
+  --color-text: #2D2D2D;
+  --color-text-light: #5A5A5A;
+  --color-text-muted: #8A8A8A;
+  --color-border: #E2DFD8;
+  --color-border-light: #EDEAE4;
+
+  /* Functional */
+  --color-success: #2D8F5E;
+  --color-link: #2A7B88;
+  --color-link-hover: #1E5C66;
+
+  /* Typography */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+
+  /* Font Sizes (fluid) */
+  --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.8rem);
+  --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem);
+  --text-base: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+  --text-lg: clamp(1.1rem, 1rem + 0.5vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+  --text-3xl: clamp(1.8rem, 1.5rem + 1.5vw, 2.5rem);
+  --text-4xl: clamp(2.2rem, 1.8rem + 2vw, 3.2rem);
+  --text-5xl: clamp(2.8rem, 2.2rem + 3vw, 4rem);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+  --space-5xl: 8rem;
+
+  /* Layout */
+  --max-width: 1200px;
+  --max-width-narrow: 800px;
+  --max-width-wide: 1400px;
+  --nav-height: 72px;
+  --border-radius: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(27, 42, 74, 0.06);
+  --shadow-md: 0 4px 12px rgba(27, 42, 74, 0.08);
+  --shadow-lg: 0 8px 30px rgba(27, 42, 74, 0.12);
+  --shadow-xl: 0 16px 50px rgba(27, 42, 74, 0.16);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}

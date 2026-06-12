@@ -1,0 +1,228 @@
+---
+/**
+ * DEPPMANN LAB — Shared Footer  (@deppmann/brand)
+ * Portable footer for every surface in the ecosystem. Carries the two
+ * required credit lines (STUDENT + INSPIRATION) and an optional
+ * "Lab-internal" notice for gated surfaces (members, corpus).
+ *
+ * Styles travel WITH this component (scoped <style> below) so any
+ * consumer that imports it gets the look for free — it only needs
+ * brand/tokens.css loaded for the CSS variables.
+ *
+ * Props (all optional — defaults reproduce the public lab site):
+ *   brand            footer brand line            default "Deppmann Lab"
+ *   address          string[] of address lines
+ *   columns          [{ heading, links:[{label, href, external?}] }]
+ *   tagline          right-side line in the bottom bar
+ *   studentCredit    STUDENT-credit line  (confirm/replace — see BRAND.md)
+ *   inspirationCredit INSPIRATION-credit line (confirm/replace — see BRAND.md)
+ *   internal         when true, render "Lab-internal — do not redistribute"
+ */
+interface FooterLink { label: string; href: string; external?: boolean; }
+interface FooterColumn { heading: string; links: FooterLink[]; }
+interface Props {
+  brand?: string;
+  address?: string[];
+  columns?: FooterColumn[];
+  tagline?: string;
+  studentCredit?: string;
+  inspirationCredit?: string;
+  internal?: boolean;
+}
+
+const {
+  brand = "Deppmann Lab",
+  address = [
+    "Department of Biology",
+    "University of Virginia",
+    "Gilmer 416",
+    "485 McCormick Road",
+    "Charlottesville, VA 22904",
+  ],
+  columns = [
+    {
+      heading: "Navigate",
+      links: [
+        { label: "Research", href: "/research" },
+        { label: "People", href: "/people" },
+        { label: "Publications", href: "/publications" },
+        { label: "Alumni", href: "/alumni" },
+      ],
+    },
+    {
+      heading: "Connect",
+      links: [
+        { label: "cd2fj@virginia.edu", href: "mailto:cd2fj@virginia.edu" },
+        { label: "Google Scholar", href: "https://scholar.google.com/citations?user=UF_zg4IAAAAJ", external: true },
+        { label: "UVA Biology", href: "https://bio.as.virginia.edu/", external: true },
+      ],
+    },
+    {
+      heading: "Resources",
+      links: [
+        { label: "Podcast", href: "/podcast" },
+        { label: "BDNF Signaling Atlas", href: "/bdnf-atlas" },
+        { label: "Course Materials", href: "/teaching" },
+        { label: "Lab Field Guide", href: "/fieldguide" },
+        { label: "Join the Lab", href: "/joinus" },
+        { label: "Latest News", href: "/news" },
+      ],
+    },
+  ],
+  tagline = "Department of Biology • Neuroscience • Biomedical Engineering • Cell Biology",
+  // Defaults below are sensible placeholders in Chris's voice — confirm or replace (see BRAND.md "Credit lines").
+  studentCredit = "Designed and built by the trainees of the Deppmann Lab.",
+  inspirationCredit = "Built on a simple idea: science is a team sport, and history should remember the generous, not only the brilliant.",
+  internal = false,
+} = Astro.props;
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  {internal && (
+    <div class="footer__internal" role="note">
+      <strong>Lab-internal</strong> — do not redistribute.
+    </div>
+  )}
+  <div class="footer__container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">{brand}</div>
+        <p class="footer__text" set:html={address.join("<br />")} />
+      </div>
+      {columns.map((col) => (
+        <div>
+          <h4 class="footer__heading">{col.heading}</h4>
+          <ul class="footer__links">
+            {col.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="footer__link"
+                  {...(link.external ? { target: "_blank", rel: "noopener" } : {})}
+                >{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="footer__credits">
+      <span class="footer__credit">{studentCredit}</span>
+      <span class="footer__credit footer__credit--inspiration">{inspirationCredit}</span>
+    </div>
+
+    <div class="footer__bottom">
+      <span>&copy; {year} {brand}, University of Virginia. All rights reserved.</span>
+      <span>{tagline}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-navy-dark);
+    color: rgba(255, 255, 255, 0.7);
+    padding: var(--space-4xl) 0 var(--space-xl);
+  }
+  .footer__internal {
+    background: var(--color-gold);
+    color: var(--color-navy-dark);
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    padding: var(--space-sm) var(--space-md);
+    letter-spacing: 0.01em;
+  }
+  .footer__container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-3xl);
+    margin-bottom: var(--space-2xl);
+  }
+  .footer__brand {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    color: var(--color-white);
+    margin-bottom: var(--space-md);
+  }
+  .footer__text {
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    max-width: 35ch;
+  }
+  .footer__heading {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-lg);
+  }
+  .footer__links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: 0;
+    margin: 0;
+  }
+  .footer__link {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .footer__link:hover {
+    color: var(--color-white);
+    text-decoration: none;
+  }
+  .footer__credits {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .footer__credit {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.6;
+  }
+  .footer__credit--inspiration {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.4);
+  }
+  @media (max-width: 768px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+    .footer__bottom {
+      flex-direction: column;
+      gap: var(--space-md);
+      text-align: center;
+    }
+  }
+</style>

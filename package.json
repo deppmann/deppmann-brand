@@ -1,0 +1,21 @@
+{
+  "name": "@deppmann/brand",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared design tokens, footer, and marks for the deppmannlab.com ecosystem.",
+  "license": "UNLICENSED",
+  "files": [
+    "tokens.css",
+    "Footer.astro",
+    "assets/"
+  ],
+  "exports": {
+    "./tokens.css": "./tokens.css",
+    "./Footer.astro": "./Footer.astro",
+    "./assets/*": "./assets/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deppmann/deppmann-brand.git"
+  }
+}
