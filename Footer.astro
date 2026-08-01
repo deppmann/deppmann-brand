@@ -70,9 +70,10 @@ const {
     },
   ],
   tagline = "Department of Biology • Neuroscience • Biomedical Engineering • Cell Biology",
-  // Defaults below are sensible placeholders in Chris's voice — confirm or replace (see BRAND.md "Credit lines").
-  studentCredit = "Designed and built by the trainees of the Deppmann Lab.",
-  inspirationCredit = "Built on a simple idea: science is a team sport, and history should remember the generous, not only the brilliant.",
+  // studentCredit defaults to empty: the site is built by Chris. Pass a value only
+  // when a specific person should be credited on a specific surface.
+  studentCredit = "",
+  inspirationCredit = "Science is a team sport. Most of what we know was handed over by someone who was under no obligation to share it.",
   internal = false,
 } = Astro.props;
 
@@ -110,7 +111,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer__credits">
-      <span class="footer__credit">{studentCredit}</span>
+      {studentCredit && <span class="footer__credit">{studentCredit}</span>}
       <span class="footer__credit footer__credit--inspiration">{inspirationCredit}</span>
     </div>
 
@@ -202,7 +203,7 @@ const year = new Date().getFullYear();
   }
   .footer__credit--inspiration {
     font-style: italic;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.58);
   }
   .footer__bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -212,7 +213,7 @@ const year = new Date().getFullYear();
     align-items: center;
     gap: var(--space-md);
     font-size: var(--text-xs);
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.62);
   }
   @media (max-width: 768px) {
     .footer__grid {

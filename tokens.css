@@ -10,7 +10,8 @@
    ============================================================ */
 
 /* --- Typeface program --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+/* The webfont <link> lives in BaseLayout's <head> so the browser can start the
+   request immediately. Importing it here put it three hops deep in the CSS. */
 
 :root {
   /* Primary Palette */

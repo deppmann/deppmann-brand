@@ -83,19 +83,18 @@ The one footer for every surface. It carries two required lines:
 Pass `internal={true}` on gated surfaces (members, corpus) to render the
 **"Lab-internal — do not redistribute"** banner.
 
-### Credit lines — CONFIRM OR REPLACE
+### Credit lines — CONFIRMED
 
-The package ships sensible defaults in Chris's voice, but these are placeholders
-until Chris signs off (they appear on every page, in his name):
+Both lines were confirmed by Chris (Aug 2026).
 
-- Student credit (default):
-  > "Designed and built by the trainees of the Deppmann Lab."
-  Replace with named trainees per surface if desired, e.g.
-  *"Members portal built by [Name]; corpus app by [Name]."*
+- Student credit: **empty by default.** Chris designed and built the site himself,
+  so no trainee credit is rendered. Pass `studentCredit` explicitly only when a
+  specific person genuinely built a specific surface, e.g.
+  *"Members portal built by [Name]."* The line is omitted entirely when empty.
 - Inspiration credit (default):
-  > "Built on a simple idea: science is a team sport, and history should
-  > remember the generous, not only the brilliant."
-  This deliberately echoes the *moral-memory* thesis of *The Molecule Hunters*.
+  > "Science is a team sport. Most of what we know was handed over by someone
+  > who was under no obligation to share it."
+  This echoes the *moral-memory* thesis of *The Molecule Hunters*.
   If the inspiration is meant to credit a specific person or source, set it here.
 
 Override per surface via props:
