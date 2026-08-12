@@ -1,0 +1,18 @@
+# RUNBOOK_DNS.md §4 pre-flip parity gate — deppmannlab.com
+# Run 2026-08-11, before the GoDaddy nameserver flip (Gate B).
+#
+# Cloudflare zone: 9ff7682ec72e2fff25fab19d207b5fac  (status: pending)
+# Cloudflare NS:   coen.ns.cloudflare.com / nova.ns.cloudflare.com
+# Records:         17 (imported from the GoDaddy BIND export, record-for-record)
+#
+# RESULT: PARITY OK against BOTH Cloudflare nameservers.
+#   apex A            identical
+#   apex MX (x2)      identical
+#   14 CNAMEs         identical  (incl. all 7 mail-client CNAMEs + pda)
+#   TXT/AAAA/CAA/_dmarc  absent on both, as expected
+#
+# The two GoDaddy delegation NS records that rode along in the BIND import were
+# removed: Cloudflare serves its own apex NS, and leaving the old provider's
+# NS in the zone is stale data.
+#
+# Not yet done: Gate B (nameserver change at GoDaddy).
