@@ -1,7 +1,7 @@
 # Ecosystem Decisions & Kill-Switch Map
 
 The operational source of truth for the deppmannlab.com ecosystem. If you touch
-hosting, DNS, or the gate, read this first. Last updated 2026-06-12 (Phase 0).
+hosting, DNS, or the gate, read this first. Last updated 2026-08-08 (portal build: D11–D13, D3 amended).
 
 ## Architecture
 
@@ -12,7 +12,8 @@ hosting, DNS, or the gate, read this first. Last updated 2026-06-12 (Phase 0).
                      └── biochempedia.deppmannlab.com   (PUBLIC — Cloudflare Pages)
 
   ── Cloudflare Access · group "deppmann-lab" · 30-day session ───── GATED ──
-                     ├── members.deppmannlab.com   → lab portal / front door
+                     ├── members.deppmannlab.com   → lab portal (Workers + D1 + R2)
+                     │      colony · antibodies · panels · images · protocols
                      └── corpus.deppmannlab.com    → Federated Corpus app (LATER)
 
   Shared: deppmann-brand (this repo) · one Access group · one RAG+citation pattern
@@ -24,7 +25,7 @@ hosting, DNS, or the gate, read this first. Last updated 2026-06-12 (Phase 0).
 |---|---|---|
 | D1 | **DNS → Cloudflare**, public records **DNS-only** at Netlify | Free Access needs Cloudflare DNS; keep Netlify serving the public site |
 | D2 | **Never proxy Netlify through Cloudflare** (no orange cloud on apex/www) | Double-CDN breaks Netlify's Let's Encrypt renewal (Netlify support guidance) |
-| D3 | Public site host = **Netlify**; gated/teaching subdomains = **Cloudflare Pages** | Don't migrate a working site; put new surfaces where the gate is |
+| D3 | Public site host = **Netlify**; gated/teaching subdomains = **Cloudflare**. **Amended 2026-08-08: new surfaces target Workers with Static Assets, not Pages** | Don't migrate a working site; put new surfaces where the gate is. Cloudflare's current guidance is that new projects start on Workers and that all platform investment now goes there — and Workers is what lets one deployment carry the site plus its D1 and R2 bindings. Same account, same Access gate, same custom domain; only the deploy target changes. Existing Pages projects keep working |
 | D4 | Auth = **Cloudflare Access**, one reusable group **"deppmann-lab"** | One login for members + corpus; ≤50 seats = free |
 | D5 | Login = **Google (lab Workspace domain, Login-Method=Google required)** + **One-time-PIN scoped to an explicit allowlist only** | Auto-onboard lab accounts via SSO/MFA; OTP covers outside collaborators and the not-yet-refired-Workspace case — but OTP must NOT ride the domain rule (see `RUNBOOK_ACCESS.md` §3) or anyone with a domain mailbox could bypass SSO |
 | D6 | **30-day** Access session | Low-friction for a small trusted lab |
@@ -32,6 +33,9 @@ hosting, DNS, or the gate, read this first. Last updated 2026-06-12 (Phase 0).
 | D8 | **4 repos + 1 brand package**, all under the `deppmann` GitHub account | Clean parallel ownership / student handoff |
 | D9 | Brand shared via **git submodule** (`brand/`), pinned by SHA | No registry/publish step; Netlify + CF Pages both auto-init submodules; immutable pin |
 | D10 | API-backed surfaces (corpus, tutor): **server-side key, hard $ cap, kill switch, named student owner** | Sabbatical maintenance is the real risk, not the build |
+| D11 | The members app **verifies `Cf-Access-Jwt-Assertion` server-side on every request** and fails closed | `RUNBOOK_ACCESS.md` §8 listed this as optional defence-in-depth. It stopped being optional when the portal became the colony census: a detached or mis-scoped policy must return 403, not serve the lab's animal records to anyone who finds the URL |
+| D12 | Public protocols travel as a **JSON snapshot in a public R2 bucket + a Netlify build hook**. The public site keeps **no database path** — no Access Bypass, no read endpoint | A snapshot cannot leak a row it does not contain. The alternative puts a public door on a database holding animal records with only a `WHERE` clause in between. The cost is staleness until the next build, which for protocol text is not a cost |
+| D13 | Data layer for gated apps = **Cloudflare D1 + R2**, inside the existing account | No second vendor and no second login beside Access, and the Access JWT already supplies the verified identity every audit row needs. Needs Workers Paid ($5/mo): D1 free caps a database at 500 MB |
 
 **D9 alternative considered:** npm-install-from-git
 (`"@deppmann/brand": "github:deppmann/deppmann-brand#<sha>"`). Also registry-free
@@ -46,7 +50,7 @@ to the npm-from-git form — same source repo.
 |---|---|---|---|---|
 | `deppmann/deppmannlab-website` | **private** (today) | Netlify | public site | yes |
 | `deppmann/deppmann-brand` (this) | **public** | n/a (package) | n/a | — |
-| `deppmann/members-deppmannlab` | private | Cloudflare Pages | Access | yes |
+| `deppmann/members-deppmannlab` | private | **Cloudflare Workers** (D1 + R2) | Access | yes |
 | `deppmann/biochempedia` | public | Cloudflare Pages | public | yes |
 | `deppmann/federated-corpus` | private | TBD (later) | Access | no (Python app) |
 | `deppmann/molecule-hunters` | public | n/a (CC-BY-NC mirror) | public | no (content) |
@@ -69,7 +73,8 @@ most cases, his account login:
 1. **Create the other GitHub repos** + push Phase-0 branches + open PRs (under his account).
 2. **DNS:** add Cloudflare zone (Gate A) and flip GoDaddy nameservers (Gate B) — `RUNBOOK_DNS.md`.
 3. **Access:** Zero Trust org, login methods, the `deppmann-lab` group, the members application — `RUNBOOK_ACCESS.md`.
-4. **Cloudflare Pages:** connect `members-deppmannlab` and `biochempedia` repos, set custom domains.
+4. **Cloudflare:** deploy `members-deppmannlab` as a **Worker** (needs a D1 database, two R2 buckets and a KV namespace first — see that repo's `SETUP.md`); connect `biochempedia` as Pages. Set custom domains.
+4b. **Workers Paid ($5/mo)** for the portal — D1 free caps a database at 500 MB (D13).
 5. **Merge** any PR to a default branch (Claude never pushes to default branches).
 
 ## Kill-switch map (how to turn each thing off, fast)
@@ -78,8 +83,11 @@ most cases, his account login:
 |---|---|---|
 | Public site `deppmannlab.com` | Stop the Netlify site / lock deploys | Netlify dashboard → site → Deploys / General |
 | `/podcast`, `/book` | Revert the page, redeploy | website repo |
-| `members.` (and `corpus.`) gate | Set the `Allow deppmann-lab` policy to **Block**, or pause the Pages project | Cloudflare Zero Trust → Access → Applications; Workers & Pages |
+| `members.` (and `corpus.`) gate | Set the `Allow deppmann-lab` policy to **Block**, or disable the Worker | Cloudflare Zero Trust → Access → Applications; Workers & Pages |
 | Who's in the lab | Edit Access group **`deppmann-lab`** Include list | Cloudflare Zero Trust → Access → Access Groups |
+| Portal writes (keep reads) | Set every `users.role` to `viewer` | D1: `UPDATE users SET role='viewer'` |
+| One portal account | `UPDATE users SET active=0 WHERE email=…` | D1 (independent of the Access group) |
+| Public protocols | Set each protocol back to `private`, then Republish | Portal → Protocols |
 | `biochempedia.` | Pause the Pages project | Cloudflare → Workers & Pages |
 | Corpus / tutor API spend | Revoke the server-side API key; it has a hard monthly cap | provider dashboard; key stored server-side only, never in git |
 | Analytics | Plausible script tag (`pa-GJ6PGXY_lPdHXDDJMukci`) in `BaseLayout.astro` | website repo |
