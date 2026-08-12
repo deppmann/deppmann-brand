@@ -10,7 +10,7 @@ read as one place.
 |---|---|---|---|
 | `deppmannlab.com` (public lab site) | Netlify | public | `deppmann/deppmannlab-website` |
 | `members.deppmannlab.com` (lab portal) | Cloudflare Pages | Cloudflare Access | `deppmann/members-deppmannlab` |
-| `biochempedia.deppmannlab.com` (teaching) | Cloudflare Pages | public | `deppmann/biochempedia` |
+| `biochemistrypedia.com` (Biochemistrypedia, teaching) | Cloudflare **Worker** | public | `deppmann/biochempedia` |
 | `/podcast`, `/book` | pages on the public site | public | (in the website repo) |
 | `corpus.deppmannlab.com` (corpus app) | TBD (later) | Cloudflare Access | `deppmann/federated-corpus` |
 
