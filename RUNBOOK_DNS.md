@@ -190,5 +190,6 @@ passed, you should never need this. If you do roll back, expect a degraded tail.
 ## 8. Only after the public site + email (servers AND clients) verify green
 
 Proceed to `RUNBOOK_ACCESS.md` for the gated subdomains (`members.`, later
-`corpus.`) on Cloudflare Pages behind Access, and the public `biochempedia.`
-Pages project. Do not revisit apex/www.
+`corpus.`) on Cloudflare Pages behind Access. Do not revisit apex/www.
+Biochemistrypedia is not part of this flip — it sits on its own Cloudflare zone,
+`biochemistrypedia.com`, and never depended on the deppmannlab.com nameservers.

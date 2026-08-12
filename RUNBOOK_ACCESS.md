@@ -105,8 +105,9 @@ Zero Trust → **Access → Applications → Add → Self-hosted**.
    test the instant the domain goes live.
 4. **Custom domains → Set up a domain →** `members.deppmannlab.com`.
 
-(Repeat 1–2 for the **public** `biochempedia.deppmannlab.com` Pages project, but
-with **no** Access app — it's public.)
+(Biochemistrypedia needs none of this. It is public, it is a **Worker** rather
+than a Pages project, and it lives on its own domain `biochemistrypedia.com` —
+no Access app, nothing to gate.)
 
 ## 6. Verify the gate end-to-end (hard gate — all four)
 
