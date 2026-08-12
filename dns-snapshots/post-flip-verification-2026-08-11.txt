@@ -1,0 +1,36 @@
+# RUNBOOK_DNS.md §6 post-flip verification — deppmannlab.com
+# Gate B (nameserver change at GoDaddy) executed 2026-08-11 by Chris.
+# Registry picked up the delegation in ~45 seconds.
+#
+# RESULT: ALL DNS AND WEB CHECKS PASS.
+#
+# Delegation
+#   .com registry   coen.ns.cloudflare.com / nova.ns.cloudflare.com   OK
+#   1.1.1.1         Cloudflare pair                                    OK
+#   9.9.9.9         Cloudflare pair                                    OK
+#   8.8.8.8         still the old pair from cache — HARMLESS, see below
+#
+# Records (via 1.1.1.1, now resolving through Cloudflare)
+#   apex A          75.2.60.5                                          OK
+#   MX              0 smtp.secureserver.net / 10 mailstore1...         OK
+#   9 mail CNAMEs   all -> *.secureserver.net                          OK
+#                   (imap smtp pop mail webmail email e mobilemail pda)
+#   www, ftp, _domainconnect, mlp527whylzy7dtndg5n, pay                OK
+#
+# Web
+#   https://deppmannlab.com          HTTP/2 200
+#   https://www.deppmannlab.com      HTTP/2 301 -> apex -> 200
+#   Certificate  Let's Encrypt, valid to 2026-09-27, covers apex + www
+#
+# Why the 8.8.8.8 cache is a non-event: the §4 parity gate proved both
+# nameserver sets return byte-identical answers. Confirmed again after the
+# flip — Google's cached path still returns the correct A, MX and imap.
+# There is therefore no split-brain window; resolvers migrate silently.
+#
+# STILL OUTSTANDING (only a human can do this):
+#   Reconnect a real mail client — quit + reopen Apple Mail, or send AND
+#   receive from a phone. DNS resolving correctly does not prove a client
+#   re-authenticates, and a webmail send can pass on a cached session.
+#
+# Do NOT edit or delete the GoDaddy-hosted zone for at least a week.
+# It is the rollback source of truth (§7).

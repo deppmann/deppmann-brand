@@ -1,0 +1,76 @@
+# RUNBOOK_ACCESS.md — Cloudflare Access gate, built 2026-08-11
+#
+# Zero Trust:   Free plan (50 seats), ~18 in use
+# Team domain:  deppmann-lab.cloudflareaccess.com
+#               (Cloudflare auto-generated "sweet-term-e5ac"; renamed before
+#               anything referenced it. Renaming later breaks sessions + IdPs.)
+#
+# Rule group:   deppmann-lab   id 151ab94a-1a99-4fd3-bee2-9057ec55cf1d
+#               18 explicit email addresses (see below). Selector = "Emails".
+#               NOT "Emails ending in" — see the note at the bottom.
+#
+# Application:  Members portal
+#   domain      members.deppmannlab.com
+#   type        self_hosted (Public DNS)
+#   session     730h (30 days) — Chris's choice; RUNBOOK §4 suggested 7d for a
+#               group whose devices leave the lab. Flagged, overruled, recorded.
+#   AUD         930efb3fe64ab815c4a0c524914ef91d730afe51e931dc2a81ab51ff95b7b925
+#   policy      "Allow deppmann-lab" · decision=allow · include=group above
+#
+# Identity:     One-time PIN only (built-in "cloudflare" provider).
+#               No Google/SAML IdP configured — see below for why.
+#
+# Wired into members-deppmannlab/wrangler.jsonc as ACCESS_TEAM_DOMAIN +
+# ACCESS_AUD so src/lib/access.ts verifies the JWT server-side and fails closed
+# (D11). The app refuses to serve if either value is missing or a placeholder.
+#
+# ---------------------------------------------------------------------------
+# WHY THERE IS NO DOMAIN RULE, AND WHY THERE NEVER SHOULD BE
+#
+# RUNBOOK_ACCESS.md §3 "Rule 2" says to eventually add
+#   Include: Emails ending in @<lab-workspace-domain>
+#   Require: Login Method = Google
+# Do NOT add it for @virginia.edu. Two independent reasons:
+#   1. @virginia.edu is the entire university. That rule admits ~25,000 people
+#      to the lab's animal records, not the lab.
+#   2. UVA runs Microsoft 365, not Google Workspace (Outlook signatures,
+#      hscmail.mcc.virginia.edu routing). Google SSO cannot authenticate a
+#      @virginia.edu address at all, so the Require clause is inert.
+# The explicit allowlist is therefore the PERMANENT design, not a stopgap.
+# Consequence, and it is a good one: removal is always clean. The nasty case in
+# §8 — "deleting a domain-rule user from the group does nothing" — cannot arise.
+#
+# ---------------------------------------------------------------------------
+# MEMBERS (18)
+#   cd2fj@virginia.edu        Chris Deppmann (PI)
+#   deppmann@gmail.com        Chris Deppmann — primary address + Cloudflare owner
+#   jms8rp@virginia.edu       Jonathon Sewell
+#   szb2dk@virginia.edu       Weile Liu
+#   mtn9wk@virginia.edu       Cheng Yang
+#   cnj5zz@virginia.edu       Jingxuan Guo
+#   fxv4jm@virginia.edu       Briana Shehu
+#   yqd8ur@virginia.edu       Charlene Kim-Aun
+#   nuc4wz@virginia.edu       Dean Cote
+#   bms3me@virginia.edu       Leann Vo
+#   sdk2sk@virginia.edu       Jiyang (Ona) Zhao
+#   ghk5cv@virginia.edu       Timothy Lee
+#   tnrosenbaum@hotmail.com   Taylor Rosenbaum      (personal address)
+#   graceleeyg@gmail.com      Grace Lee             (personal address)
+#   ezunder@virginia.edu      Eli Zunder            (collaborator)
+#   etq5cq@virginia.edu       Robert Heussner       (collaborator)
+#   ajk6fb@virginia.edu       Isaiah Swann          (collaborator)
+#   eva8yz@virginia.edu       Jiachen                (collaborator)
+#
+# ---------------------------------------------------------------------------
+# NOT DONE YET
+#   * The gate has NOT been tested end to end — members.deppmannlab.com has no
+#     origin yet, so there is nothing to be allowed INTO. RUNBOOK §6's four
+#     hard gates (Google allow / OTP allow / stranger denied / preview URL
+#     covered) run after the Worker deploys.
+#   * The *.workers.dev preview hostname is NOT covered by this application.
+#     `deppmann.workers.dev` appeared in the domain picker. Cover it with a
+#     second app using the same policy, or disable preview URLs, BEFORE the
+#     first deploy — otherwise the portal is briefly public there.
+#   * Two personal addresses (hotmail/gmail) are not institution-controlled.
+#     Off-boarding them depends on editing this group, not on UVA disabling an
+#     account.

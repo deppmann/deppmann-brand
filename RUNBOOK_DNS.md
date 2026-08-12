@@ -28,7 +28,13 @@ Access on the gated subdomains — while the public site stays on Netlify and em
 
 ---
 
-## 0. Current zone — captured 2026-06-12 against GoDaddy authoritative NS (ns35.domaincontrol.com)
+## 0. Current zone — captured 2026-06-12, CORRECTED 2026-08-11 from the GoDaddy zone export
+
+> **2026-08-11:** the original table listed 13 records. The zone export showed **17**.
+> The three marked below were invisible to the dig sweep for the obvious reason —
+> a sweep can only query names it already knows, and nobody guesses
+> `mlp527whylzy7dtndg5n`. This is golden rule 1, demonstrated. All 17 are now in
+> Cloudflare and parity-checked.
 
 These resolve today and **must all exist in Cloudflare before the flip.**
 Treat this table as a CHECKLIST, not the source of truth — reconcile it against
@@ -50,6 +56,9 @@ the GoDaddy **zone export** (§1), which is authoritative.
 | CNAME | `mobilemail` | `mobilemail-v01.prod.mesa1.secureserver.net` | DNS-only | **mobile mail** |
 | CNAME | `ftp` | `deppmannlab.com` | DNS-only | GoDaddy default |
 | CNAME | `_domainconnect` | `_domainconnect.gd.domaincontrol.com` | DNS-only | GoDaddy Domain Connect |
+| CNAME | `mlp527whylzy7dtndg5n` | `verify.squarespace.com` | DNS-only | **Squarespace domain verification — found only in the export** |
+| CNAME | `pay` | `paylinks.commerce.godaddy.com` | DNS-only | **GoDaddy pay links — found only in the export** |
+| CNAME | `pda` | `mobilemail-v01.prod.mesa1.secureserver.net` | DNS-only | **mail client (legacy PDA) — found only in the export** |
 
 **Replicate ALL of the above. Do not make per-record "is this needed?" judgment
 calls — selective dropping is exactly how mail clients break.**
