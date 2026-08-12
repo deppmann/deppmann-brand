@@ -14,7 +14,7 @@ The single source of truth that keeps four parallel builds looking like one plac
 ## Hosting & gate decisions (the short version)
 
 - Public `deppmannlab.com` + `www` stay on **Netlify**. DNS moves to Cloudflare but those records stay **DNS-only (grey cloud)** pointing at Netlify. **Never proxy Netlify through Cloudflare** (breaks Let's Encrypt renewal).
-- Only the **gated subdomains** (`members.`, `corpus.`) run on **Cloudflare Pages behind Cloudflare Access**. `biochempedia.` is public Cloudflare Pages.
+- Only the **gated subdomains** (`members.`, `corpus.`) run on **Cloudflare Pages behind Cloudflare Access**. Biochemistrypedia is public and runs as a **Cloudflare Worker** on its own domain, `biochemistrypedia.com`.
 - One reusable Access policy, **"deppmann-lab"**, gates members + corpus with one login (Google Workspace domain, with a small email-allowlist exception).
 
 ## How to consume this package (git submodule)
