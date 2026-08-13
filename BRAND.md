@@ -48,9 +48,20 @@ dark sections, gold→gold-light for primary buttons, teal→gold for accent rul
 - **Body / UI:** Inter (300–700).
 - **Mono:** SF Mono / Fira.
 
-Both webfonts load via the `@import` at the top of `tokens.css` — consumers get
-them automatically. Use the fluid scale (`--text-xs` … `--text-5xl`); never
-hardcode px font sizes.
+**Each consumer loads the webfonts itself.** Put this in your `<head>`, after the
+two `preconnect` hints:
+
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" />
+```
+
+`tokens.css` used to carry this as an `@import` and consumers got it for free.
+That moved out so the request starts from `<head>` instead of three CSS hops
+deep. The failure mode is quiet — a surface that omits the `<link>` still builds,
+still passes an asset check, and falls back to system fonts everywhere. It has
+already happened once. Worth an explicit build assertion in each consumer.
+
+Use the fluid scale (`--text-xs` … `--text-5xl`); never hardcode px font sizes.
 
 ## Spacing, layout, motion
 
@@ -82,6 +93,23 @@ The one footer for every surface. It carries two required lines:
 
 Pass `internal={true}` on gated surfaces (members, corpus) to render the
 **"Lab-internal — do not redistribute"** banner.
+
+### Surface-specific fine print (the default slot)
+
+Anything passed as children renders between the link grid and the credit lines,
+styled as quiet fine print. Use it for what a surface is *obliged* to say and the
+others are not — third-party licence attributions, corrections notices, figure
+caveats. Pass plain `<p>`; the component styles them.
+
+```astro
+<Footer brand="Biochemistrypedia" columns={cols}>
+  <p>Structures load live from RCSB PDB (CC0) and PubChem. Simulations from
+     PhET (CC BY 4.0).</p>
+</Footer>
+```
+
+Omit the children and nothing renders, so existing usage is unaffected. Do not
+put navigation here — that is what `columns` is for.
 
 ### Credit lines — CONFIRMED
 

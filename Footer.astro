@@ -110,6 +110,15 @@ const year = new Date().getFullYear();
       ))}
     </div>
 
+    {/* Surface-specific fine print — licence attributions a surface is obliged to
+        carry, corrections notices, figure caveats. Optional: renders nothing when
+        the consumer passes no children, so existing usage is unchanged. */}
+    {Astro.slots.has("default") && (
+      <div class="footer__notes">
+        <slot />
+      </div>
+    )}
+
     <div class="footer__credits">
       {studentCredit && <span class="footer__credit">{studentCredit}</span>}
       <span class="footer__credit footer__credit--inspiration">{inspirationCredit}</span>
@@ -188,6 +197,36 @@ const year = new Date().getFullYear();
     color: var(--color-white);
     text-decoration: none;
   }
+  /* Slot region: surface-specific fine print. Sits between the link grid and the
+     credit lines, quieter than the links and level with the credits. Consumers
+     pass plain <p> elements; the descendant rules below mean they need no CSS. */
+  .footer__notes {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-width: 80ch;
+  }
+  .footer__notes :global(p) {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.65;
+  }
+  .footer__notes :global(a) {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .footer__notes :global(a:hover) { color: var(--color-gold-light); }
+  .footer__notes :global(strong) { color: rgba(255, 255, 255, 0.7); }
+
+  /* When notes are present they already draw the divider, so the credits block
+     must not draw a second one directly beneath it. */
+  .footer__notes + .footer__credits { border-top: 0; padding-top: 0; }
+
   .footer__credits {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: var(--space-lg);
