@@ -14,6 +14,10 @@
  *   address          string[] of address lines
  *   columns          [{ heading, links:[{label, href, external?}] }]
  *   tagline          right-side line in the bottom bar
+ *   copyright        who holds the copyright, replacing the default
+ *                    "<brand>, University of Virginia". Set it on any surface
+ *                    that is not university work — a personally-owned project
+ *                    must not print the university as its rights holder.
  *   studentCredit    STUDENT-credit line  (confirm/replace — see BRAND.md)
  *   inspirationCredit INSPIRATION-credit line (confirm/replace — see BRAND.md)
  *   internal         when true, render "Lab-internal — do not redistribute"
@@ -25,6 +29,7 @@ interface Props {
   address?: string[];
   columns?: FooterColumn[];
   tagline?: string;
+  copyright?: string;
   studentCredit?: string;
   inspirationCredit?: string;
   internal?: boolean;
@@ -70,6 +75,7 @@ const {
     },
   ],
   tagline = "Department of Biology • Neuroscience • Biomedical Engineering • Cell Biology",
+  copyright,
   // studentCredit defaults to empty: the site is built by Chris. Pass a value only
   // when a specific person should be credited on a specific surface.
   studentCredit = "",
@@ -125,7 +131,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer__bottom">
-      <span>&copy; {year} {brand}, University of Virginia. All rights reserved.</span>
+      <span>&copy; {year} {copyright ?? `${brand}, University of Virginia`}. All rights reserved.</span>
       <span>{tagline}</span>
     </div>
   </div>
