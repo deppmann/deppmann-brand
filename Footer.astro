@@ -18,6 +18,10 @@
  *                    "<brand>, University of Virginia". Set it on any surface
  *                    that is not university work — a personally-owned project
  *                    must not print the university as its rights holder.
+ *   rights           the words after the copyright holder. Default
+ *                    "All rights reserved". Set it on a surface that publishes
+ *                    under an open licence, so the footer does not contradict
+ *                    the licence (for example "Some rights reserved").
  *   studentCredit    STUDENT-credit line  (confirm/replace — see BRAND.md)
  *   inspirationCredit INSPIRATION-credit line (confirm/replace — see BRAND.md)
  *   internal         when true, render "Lab-internal — do not redistribute"
@@ -30,6 +34,7 @@ interface Props {
   columns?: FooterColumn[];
   tagline?: string;
   copyright?: string;
+  rights?: string;
   studentCredit?: string;
   inspirationCredit?: string;
   internal?: boolean;
@@ -76,6 +81,7 @@ const {
   ],
   tagline = "Department of Biology • Neuroscience • Biomedical Engineering • Cell Biology",
   copyright,
+  rights = "All rights reserved",
   // studentCredit defaults to empty: the site is built by Chris. Pass a value only
   // when a specific person should be credited on a specific surface.
   studentCredit = "",
@@ -131,7 +137,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer__bottom">
-      <span>&copy; {year} {copyright ?? `${brand}, University of Virginia`}. All rights reserved.</span>
+      <span>&copy; {year} {copyright ?? `${brand}, University of Virginia`}. {rights}.</span>
       <span>{tagline}</span>
     </div>
   </div>
